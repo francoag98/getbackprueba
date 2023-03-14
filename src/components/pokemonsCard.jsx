@@ -67,14 +67,14 @@ export const PokemonsCard = () => {
     return translatdPokemon;
   };
   return (
-    <div className="flex w-full h-screen items-center justify-center bg-slate-100">
+    <div className="flex w-screen h-screen items-center justify-center bg-slate-100">
       <div>
         {pokemon && translatedPokemon ? (
-          <div className="card card-side bg-base-100 shadow-xl max-sm:flex-col">
+          <div className="card card-side p-6 bg-base-100 shadow-xl max-sm:flex-col w-full">
             <figure>
-              <img src={pokemon?.image} className="w-64 h-64" alt="Movie" />
+              <img src={pokemon?.image} className="w-64 ml-10" alt="Movie" />
             </figure>
-            <div className="card-body">
+            <div className="card-body mr-16">
               <h1 className="card-title text-4xl ml-3 max-sm:justify-center max-sm:text-2xl">
                 {translatedPokemon.name.toUpperCase()}
               </h1>
