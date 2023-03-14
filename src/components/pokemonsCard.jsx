@@ -71,7 +71,7 @@ export const PokemonsCard = ()=>{
         {pokemon && translatedPokemon ? (
           <div>
             <h1>{translatedPokemon.name.toUpperCase()}</h1>
-            <img src={pokemon.image} alt={translatedPokemon.name} />
+            <img src={pokemon?.image} alt={translatedPokemon.name} />
             <h4>Movimientos</h4>
             <div>
               {translatedPokemon.moves?.map((poke, index) => (
