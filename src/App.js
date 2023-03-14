@@ -1,37 +1,88 @@
 import "./App.css";
 import { getPokemons } from "./getPokemons";
 import { useState } from "react";
-import i18n from "./i18n";
-import { useTranslation } from "react-i18next";
 
 function App() {
-  const [pokemon, setPokemon] = useState({});
-  const { t } = useTranslation();
+  const [pokemon, setPokemon] = useState(null);
+  const [translatedPokemon, setTranslatedPokemon] = useState(null);
+  const MICROSOFT_TRANSLATOR_API_KEY = "b61747c4fd654fbeba26c9258183b62e";
   const changePokemon = async () => {
     const response = await getPokemons();
-    console.log("hola", response);
-    setPokemon(response);
+    const sacandoGuion = response.moves.map((move) => {
+      if (move.move.name.includes("-")) {
+        const name = move.move.name.replace("-", " ");
+        return name;
+      }
+      return move.move.name;
+    });
+    const pokemonToTranslate = {
+      name: response.name,
+      moves: sacandoGuion.slice(0, 4),
+      types: response.types.slice(0, 4),
+    };
+    console.log(pokemonToTranslate.name);
+    setPokemon({
+      ...pokemonToTranslate,
+      image: response.sprites.front_default,
+    });
+    translatePokemon(pokemonToTranslate);
   };
 
+  const translateText = async (text, fromLang, toLang) => {
+    const url = `https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=${fromLang}&to=${toLang}`;
+    const body = [{ text: text }];
+    const headers = new Headers({
+      "Ocp-Apim-Subscription-Key": MICROSOFT_TRANSLATOR_API_KEY,
+      "Content-Type": "application/json",
+    });
+    const result = await fetch(url, {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(body),
+    })
+      .then((response) => response.json())
+      .then((data) => data[0].translations[0].text)
+      .catch((error) => console.error(error));
+    return result;
+  };
+
+  const translatePokemon = async (pokemon) => {
+    console.log(pokemon.name);
+    const translatedName = await translateText(pokemon.name, "en", "es");
+    console.log(pokemon.name);
+    const translatedMoves = await Promise.all(
+      pokemon.moves.map((movex) => {
+        return translateText(movex, "en", "es");
+      })
+    );
+    const translatedTypes = await Promise.all(
+      pokemon.types.map((typex) => translateText(typex.type.name, "en", "es"))
+    );
+
+    const translatdPokemon = {
+      name: translatedName,
+      moves: translatedMoves,
+      types: translatedTypes,
+    };
+    setTranslatedPokemon(translatdPokemon);
+    return translatdPokemon;
+  };
   return (
     <div className="App">
-      {pokemon && pokemon.name ? (
+      {pokemon && translatedPokemon ? (
         <div>
-          <h1>{t(pokemon.name)}</h1>
-          <img
-            src={pokemon.sprites && pokemon.sprites.front_default}
-            alt={pokemon.name}
-          />
+          <h1>{translatedPokemon.name.toUpperCase()}</h1>
+          <img src={pokemon.image} alt={translatedPokemon.name} />
           <h4>Movimientos</h4>
           <div>
-            {pokemon.moves?.slice(0, 4).map((poke, index) => (
-              <p key={index}>{t(poke.move.name)}</p>
+            {translatedPokemon.moves?.map((poke, index) => (
+              <p key={index}>{poke}</p>
             ))}
           </div>
           <h4>Tipo de pokemon</h4>
           <div>
-            {pokemon.types?.map((poke, index) => (
-              <p key={index}>{t(poke.type.name)}</p>
+            {translatedPokemon.types?.map((poke, index) => (
+              <p key={index}>{poke}</p>
             ))}
           </div>
           <div>
