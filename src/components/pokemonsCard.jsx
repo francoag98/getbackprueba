@@ -67,29 +67,41 @@ export const PokemonsCard = ()=>{
       return translatdPokemon;
     };
     return (
-      <div className="App">
-        {pokemon && translatedPokemon ? (
-          <div>
-            <h1>{translatedPokemon.name.toUpperCase()}</h1>
-            <img src={pokemon?.image} alt={translatedPokemon.name} />
-            <h4>Movimientos</h4>
+        <div className="flex w-full h-screen items-center justify-center bg-slate-100">
             <div>
-              {translatedPokemon.moves?.map((poke, index) => (
-                <p key={index}>{poke}</p>
-              ))}
-            </div>
-            <h4>Tipo de pokemon</h4>
-            <div>
-              {translatedPokemon.types?.map((poke, index) => (
-                <p key={index}>{poke}</p>
-              ))}
-            </div>
-            <div>
-              <button onClick={changePokemon}>OBTEN OTRO POKEMON</button>
-            </div>
+            {pokemon && translatedPokemon ? (
+            <div className="card card-side bg-base-100 shadow-xl">
+                    <figure><img src={pokemon?.image} className="w-64" alt="Movie"/></figure>
+          <div className="card-body">
+          <h1 className="card-title text-4xl ml-3">{translatedPokemon.name.toUpperCase()}</h1>
+          <div className="p-4 flex flex-row gap-10">
+              <div>
+              <h3 className="text-left text-xl font-bold mb-2">Movimientos</h3>
+              <div className="flex flex-col gap-2">
+                  {translatedPokemon.moves?.map((poke, index) => (
+                      <p key={index} className="text-left">{poke}</p>
+                  ))}
+              </div>
+              </div>
+              <div>
+                  <h3 className="text-left text-xl font-bold mb-2">Tipo de Pokemon</h3>
+                  <div>
+                      {translatedPokemon.types?.map((poke, index) => (
+                          <p key={index} className="text-left gap-2">{poke}</p>
+                      ))}
+                  </div>
+              </div>
           </div>
+          <div className="card-actions justify-start ml-3">
+          <button className="btn btn-primary" onClick={changePokemon}>OBTEN OTRO POKEMON</button>
+            </div>
+        </div>
+        </div>
         ) : (
-          <button onClick={changePokemon}>OBTEN UN POKEMON</button>
+            <div className="flex items-center justify-center h-screen w-screen bg-slate-100">
+                <button className="btn btn-primary w-64 bg-white text-blue-800 hover:text-white" onClick={changePokemon}>OBTEN UN POKEMON</button>
+            </div>
         )}
-      </div>
-)}
+        </div>
+        </div>
+    )}
