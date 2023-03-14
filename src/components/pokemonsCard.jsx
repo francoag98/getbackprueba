@@ -1,13 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { getPokemons } from "../getPokemons";
 import { useState } from "react";
+import ClipLoader from "react-spinners/ClipLoader";
 
 export const PokemonsCard = () => {
   const [pokemon, setPokemon] = useState(null);
   const [translatedPokemon, setTranslatedPokemon] = useState(null);
+  const [loading, setLoading] = useState(false);
   const apiKey = process.env.REACT_APP_MICROSOFT_TRANSLATOR_API_KEY;
 
+  useEffect(() => {
+    setTranslatedPokemon(null);
+  }, [pokemon]);
+
+  const reset = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1800);
+  };
   const changePokemon = async () => {
+    reset();
     const response = await getPokemons();
     const sacandoGuion = response.moves.map((move) => {
       if (move.move.name.includes("-")) {
@@ -66,6 +79,16 @@ export const PokemonsCard = () => {
     setTranslatedPokemon(translatdPokemon);
     return translatdPokemon;
   };
+  if (loading) {
+    return (
+      <div className="flex flex-col justify-center items-center w-screen h-screen">
+        <ClipLoader color="purple" size={100} />
+        <h3 className="text-purple-800 text-2xl font-bold mt-4">
+          Cargando Pokemon...
+        </h3>
+      </div>
+    );
+  }
   return (
     <div className="flex w-screen h-screen items-center justify-center bg-slate-100">
       <div>
@@ -114,7 +137,7 @@ export const PokemonsCard = () => {
         ) : (
           <div className="flex items-center justify-center h-screen w-screen bg-slate-100">
             <button
-              className="btn btn-primary w-64 bg-white text-blue-800 hover:text-white"
+              className="btn btn-primary w-64 bg-white text-violet-800 hover:text-white"
               onClick={changePokemon}>
               OBTEN UN POKEMON
             </button>
