@@ -5,7 +5,8 @@ import { useState } from "react";
 function App() {
   const [pokemon, setPokemon] = useState(null);
   const [translatedPokemon, setTranslatedPokemon] = useState(null);
-  const MICROSOFT_TRANSLATOR_API_KEY = "b61747c4fd654fbeba26c9258183b62e";
+  const apiKey = process.env.REACT_APP_MICROSOFT_TRANSLATOR_API_KEY;
+
   const changePokemon = async () => {
     const response = await getPokemons();
     const sacandoGuion = response.moves.map((move) => {
@@ -32,7 +33,7 @@ function App() {
     const url = `https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=${fromLang}&to=${toLang}`;
     const body = [{ text: text }];
     const headers = new Headers({
-      "Ocp-Apim-Subscription-Key": MICROSOFT_TRANSLATOR_API_KEY,
+      "Ocp-Apim-Subscription-Key": apiKey,
       "Content-Type": "application/json",
     });
     const result = await fetch(url, {
@@ -47,9 +48,7 @@ function App() {
   };
 
   const translatePokemon = async (pokemon) => {
-    console.log(pokemon.name);
     const translatedName = await translateText(pokemon.name, "en", "es");
-    console.log(pokemon.name);
     const translatedMoves = await Promise.all(
       pokemon.moves.map((movex) => {
         return translateText(movex, "en", "es");
