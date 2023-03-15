@@ -17,7 +17,7 @@ export const PokemonsCard = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-    }, 1800);
+    }, 2000);
   };
   const changePokemon = async () => {
     reset();
